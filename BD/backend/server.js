@@ -59,6 +59,18 @@ app.use("/api/donorRegistration", require("./routes/DonorRegistrationRoutes"));
 
 
 // --- Start Server ---
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server running on ${PORT}`);
+});
+
+// Graceful error handling for common listen errors (e.g., EADDRINUSE)
+server.on('error', (err) => {
+  if (err && err.code === 'EADDRINUSE') {
+    console.error(`Port ${PORT} is already in use. Do you have another server running?`);
+    console.error(`On Windows you can run: netstat -ano | findstr :${PORT}  OR  Get-NetTCPConnection -LocalPort ${PORT}`);
+    console.error(`Then kill the process: taskkill /PID <pid> /F  OR  Stop-Process -Id <pid> -Force`);
+    process.exit(1);
+  }
+  console.error('Server error:', err);
+  process.exit(1);
 });
