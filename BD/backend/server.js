@@ -12,12 +12,28 @@ const PORT = process.env.PORT || 5002; // Backend will run on port 5001
 
 // --- Middlewares ---
 // Allow your React app to call this server
+// Configure CORS with a dynamic whitelist. In Render set CLIENT_URL or CLIENT_URLS (comma-separated)
+// Example: CLIENT_URLS="http://localhost:5173,https://your-frontend.onrender.com"
+const clientUrls = process.env.CLIENT_URLS || process.env.CLIENT_URL || "http://localhost:5173";
+const allowedOrigins = clientUrls.split(',').map(u => u.trim()).filter(Boolean);
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || "http://localhost:5173",   // ✅ allow frontend
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  origin: function(origin, callback) {
+    // Allow requests with no origin (e.g., curl, server-to-server)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      return callback(null, true);
+    } else {
+      return callback(new Error('CORS policy: This origin is not allowed - ' + origin));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true,
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
+// Ensure preflight requests are handled
+app.options('*', cors());
 // Allow the server to understand JSON
 app.use(express.json()); 
 
