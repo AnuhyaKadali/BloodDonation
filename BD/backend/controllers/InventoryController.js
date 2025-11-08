@@ -26,7 +26,6 @@ exports.createInventory = async (req, res) => {
     res.status(500).send("Server Error");
   }
 };
-
 //
 // @desc    Get all blood stock from inventory
 // @route   GET /api/inventory

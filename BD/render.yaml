@@ -21,8 +21,11 @@ services:
     name: blood-donation-frontend
     env: node
     region: oregon
-    buildCommand: cd BD/blood\ donation && npm install && npm run build
-    startCommand: cd BD/blood\ donation && npm run preview
+    # Run build inside the frontend folder (path contains a space so we quote it).
+    buildCommand: cd "BD/blood donation" && npm install && npm run build
+    # Serve the built static files using npx serve (ensures $PORT is used).
+    # Alternatively you can use: npm run preview -- --port $PORT
+    startCommand: cd "BD/blood donation" && npx serve -s dist -l $PORT
     envVars:
       - key: VITE_API_URL
         fromService:
