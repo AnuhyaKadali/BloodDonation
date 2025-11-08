@@ -1,4 +1,3 @@
-const express = require('express');
 const mongoose = require("mongoose");
 
 const inventorySchema = mongoose.Schema(
@@ -9,4 +8,4 @@ const inventorySchema = mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("inventory", inventorySchema);
+module.exports = mongoose.model("Inventory", inventorySchema);
