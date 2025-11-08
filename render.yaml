@@ -1,0 +1,31 @@
+services:
+  # Backend API service
+  - type: web
+    name: blood-donation-api
+    env: node
+    region: oregon
+    buildCommand: cd BD/backend && npm install
+    startCommand: cd BD/backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: PORT
+        value: 5002
+
+  # Frontend service
+  - type: web
+    name: blood-donation-frontend
+    env: node
+    region: oregon
+    buildCommand: cd BD/blood\ donation && npm install && npm run build
+    startCommand: cd BD/blood\ donation && npm run preview
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          name: blood-donation-api
+          type: web
+          property: host
